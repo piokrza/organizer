@@ -4,6 +4,11 @@ import { Path } from '#core/enum';
 
 export const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: Path.COURSE,
+  },
+  {
     path: Path.AUTH,
     loadChildren: async () => (await import('#auth/index')).AuthModule,
   },

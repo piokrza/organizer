@@ -24,6 +24,7 @@
       "#auth/*": ["src/app/feature/auth/*"],
       "#course/*": ["src/app/feature/course/*"],
       "#core/*": ["src/app/core/*"],
+      "#ui/*": ["src/app/ui/*"],
       "#fin-track/*": ["src/app/feature/fin-track/*"]
     }
   },

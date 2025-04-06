@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'org-main',
+  selector: 'org-loader',
   template: `
     <!--  -->
-    <h1>Main works</h1>
+    <p>Loading...</p>
   `,
 })
-export class MainComponent {}
+export class LoaderComponent {}
