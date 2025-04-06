@@ -9,13 +9,13 @@ import { routes, AppComponent } from 'src/app';
 
 import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
 
+const provideFirebase = () => [
+  provideAuth(() => getAuth()),
+  provideFirestore(() => getFirestore()),
+  provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+];
+const provideIonic = () => [provideIonicAngular(), { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }];
+
 bootstrapApplication(AppComponent, {
-  providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
-  ],
+  providers: [...provideFirebase(), ...provideIonic(), provideRouter(routes, withPreloading(PreloadAllModules))],
 });
