@@ -21,7 +21,7 @@ export class AuthHttpService {
     return user(this.#firebaseAuth);
   }
 
-  signin$(payload: UserCredentials): Observable<void> {
+  signinWithEmailAndPassword$(payload: UserCredentials): Observable<void> {
     return from(
       createUserWithEmailAndPassword(this.#firebaseAuth, payload.email, payload.password).then(({ user }) => {
         return updateProfile(user, { displayName: payload.username });

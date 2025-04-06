@@ -22,6 +22,7 @@
     "useDefineForClassFields": false,
     "paths": {
       "#auth/*": ["src/app/feature/auth/*"],
+      "#course/*": ["src/app/feature/course/*"],
       "#core/*": ["src/app/core/*"],
       "#fin-track/*": ["src/app/feature/fin-track/*"]
     }

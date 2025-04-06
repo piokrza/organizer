@@ -11,4 +11,8 @@ export const routes: Routes = [
     path: Path.FIN_TRACK,
     loadChildren: async () => (await import('#fin-track/index')).FinTracktModule,
   },
+  {
+    path: Path.COURSE,
+    loadChildren: async () => (await import('#course/index')).CourseModule,
+  },
 ];
