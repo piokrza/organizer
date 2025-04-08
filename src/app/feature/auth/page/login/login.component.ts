@@ -1,34 +1,14 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  IonItem,
-  IonList,
-  IonTitle,
-  IonInput,
-  IonHeader,
-  IonContent,
-  IonButton,
-  IonToolbar,
-  IonInputPasswordToggle,
-} from '@ionic/angular/standalone';
+import { IonTitle, IonHeader, IonContent, IonToolbar } from '@ionic/angular/standalone';
 
+import { AuthFormComponent } from '#auth/component/auth-form';
 import { UserCredentials } from '#auth/model';
 import { AuthService } from '#auth/service';
+import { UserStore } from '#auth/state';
 
-const imports = [
-  IonItem,
-  IonList,
-  IonTitle,
-  IonInput,
-  IonButton,
-  IonHeader,
-  IonContent,
-  IonToolbar,
-  ReactiveFormsModule,
-  IonInputPasswordToggle,
-];
+const imports = [IonTitle, IonHeader, IonContent, IonToolbar, AuthFormComponent];
 
 @Component({
   selector: 'org-login',
@@ -40,48 +20,22 @@ const imports = [
     </ion-header>
 
     <ion-content>
-      <ng-container [formGroup]="form">
-        <ion-list>
-          <ion-item>
-            <ion-input label="Username" [formControl]="form.controls.name" />
-          </ion-item>
-
-          <ion-item>
-            <ion-input label="Email" [formControl]="form.controls.email" />
-          </ion-item>
-
-          <ion-item>
-            <ion-input label="Password" type="password" [formControl]="form.controls.password">
-              <ion-input-password-toggle slot="end" />
-            </ion-input>
-          </ion-item>
-        </ion-list>
-
-        <ion-button (click)="loginWithEmailAndPassword()">Login</ion-button>
-      </ng-container>
+      <div class="form-wrapper">
+        <org-auth-form (formSubmit)="loginWithEmailAndPassword($event)" />
+      </div>
     </ion-content>
   `,
+  styleUrl: './login.component.scss',
   imports,
 })
 export class LoginComponent {
+  protected readonly userStore = inject(UserStore);
+
   readonly #destroyRef = inject(DestroyRef);
   readonly #authService = inject(AuthService);
 
-  readonly form = new FormGroup({
-    name: new FormControl<string>('', { nonNullable: true, validators: [Validators.required] }),
-    email: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.email] }),
-    password: new FormControl<string>('', { nonNullable: true, validators: [Validators.required, Validators.minLength(6)] }),
-  });
-
-  loginWithEmailAndPassword() {
-    if (this.form.invalid) {
-      this.form.markAsDirty();
-      return;
-    }
-
-    const { email, name, password } = this.form.controls;
-    const payload: UserCredentials = { email: email.value, username: name.value, password: password.value };
-
-    this.#authService.login$(payload).pipe(takeUntilDestroyed(this.#destroyRef)).subscribe();
+  loginWithEmailAndPassword({ email, password }: Partial<UserCredentials>) {
+    if (!email || !password) return;
+    this.#authService.login$({ email, password }).pipe(takeUntilDestroyed(this.#destroyRef)).subscribe();
   }
 }

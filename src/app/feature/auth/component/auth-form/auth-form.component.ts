@@ -1,35 +1,40 @@
-import { Component, computed, effect, input, output } from '@angular/core';
+import { Component, computed, effect, inject, input, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { IonItem, IonList, IonInput, IonButton, IonInputPasswordToggle } from '@ionic/angular/standalone';
+
 import { UserCredentials, UserCredentialsForm } from '#auth/model';
+import { UserStore } from '#auth/state';
 import { Path } from '#core/enum';
 
-const imports = [ReactiveFormsModule, RouterLink];
+const imports = [ReactiveFormsModule, RouterLink, IonItem, IonList, IonInput, IonButton, IonInputPasswordToggle];
 
 @Component({
   selector: 'org-auth-form',
   template: `
-    <h1 class="text-center mb-6 text-3xl">{{ view() === 'login' ? 'Login' : 'Signin' }}</h1>
+    <form [formGroup]="form" (keyup.enter)="submit()">
+      <ion-list>
+        @if (view() === 'signin') {
+          <ion-item>
+            <ion-input label="Username" [formControl]="form.controls.username" />
+          </ion-item>
+        }
 
-    <form class="grid gap-3 mb-5" [formGroup]="form" (ngSubmit)="submit()" (keyup.enter)="submit()">
-      <!-- @let ctrls = form.controls; -->
+        <ion-item>
+          <ion-input label="Email" [formControl]="form.controls.email" />
+        </ion-item>
 
-      <!-- <input pInputText placeholder="Email" type="text" [formControl]="ctrls.email" /> -->
-      @if (this.view() === 'signin') {
-        <!-- <input pInputText placeholder="Username" type="text" [formControl]="ctrls.username" /> -->
-      }
-      <!-- <p-password styleClass="w-full" placeholder="Password" [feedback]="false" [formControl]="ctrls.password" /> -->
+        <ion-item>
+          <ion-input label="Password" type="password" [formControl]="form.controls.password">
+            <ion-input-password-toggle slot="end" />
+          </ion-input>
+        </ion-item>
+      </ion-list>
     </form>
+    <ion-button [disabled]="userStore.isProcessing()" (click)="submit()">Login</ion-button>
 
-    <!-- <button
-      type="submit"
-      styleClass="w-full"
-      [disabled]="isProcessing()"
-      [label]="view() === 'login' ? 'Login' : 'Signin'"
-      (onClick)="submit()" /> -->
-
-    <p class="mt-7 text-center">
+    <p class="mt-7 ion-text-center">
       {{ view() === 'login' ? "Don't have account?" : 'Have an account?' }}
       <a class="text-sky-500" [routerLink]="redirectPath()">
         {{ view() === 'login' ? 'Signin' : 'Login' }}
@@ -49,6 +54,8 @@ export class AuthFormComponent {
     });
   }
 
+  protected readonly userStore = inject(UserStore);
+
   readonly view = input<'login' | 'signin'>('login');
   readonly formSubmit = output<Partial<UserCredentials>>();
 
@@ -57,9 +64,8 @@ export class AuthFormComponent {
     email: new FormControl('', { validators: [Validators.required, Validators.email], nonNullable: true }),
     password: new FormControl('', { nonNullable: true }),
   });
-  readonly redirectPath = computed(() => ['../', this.view() === 'login' ? Path.SIGNIN : Path.LOGIN]);
 
-  readonly Path = Path;
+  readonly redirectPath = computed(() => ['../', this.view() === 'login' ? Path.SIGNIN : Path.LOGIN]);
 
   submit(): void {
     if (this.form.invalid) {

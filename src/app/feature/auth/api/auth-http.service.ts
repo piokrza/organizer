@@ -11,7 +11,7 @@ import {
 } from '@angular/fire/auth';
 import { from, Observable } from 'rxjs';
 
-import { UserCredentials } from '#auth/model';
+import { AuthPayload, UserCredentials } from '#auth/model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthHttpService {
@@ -22,6 +22,14 @@ export class AuthHttpService {
   }
 
   signinWithEmailAndPassword$(payload: UserCredentials): Observable<void> {
+    return from(
+      createUserWithEmailAndPassword(this.#firebaseAuth, payload.email, payload.password).then(({ user }) => {
+        return updateProfile(user, { displayName: payload.username });
+      })
+    );
+  }
+
+  signin$(payload: AuthPayload): Observable<void> {
     return from(
       createUserWithEmailAndPassword(this.#firebaseAuth, payload.email, payload.password).then(({ user }) => {
         return updateProfile(user, { displayName: payload.username });
