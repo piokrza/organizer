@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Discover places</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>{{ loadedPlaces()[0].title }}</ion-card-title>
+            <ion-card-subtitle> {{ loadedPlaces()[0].price | currency }} </ion-card-subtitle>
+          </ion-card-header>
+          <ion-img [src]="loadedPlaces()[0].imageUrl" />
+          <ion-card-content>
+            <p>{{ loadedPlaces()[0].description }}</p>
+          </ion-card-content>
+
+          <div class="ion-text-right">
+            <ion-button
+              fill="clear"
+              color="primary"
+              routerDirection="backward"
+              [routerLink]="['/', 'course', 'places', 'tabs', 'discover', loadedPlaces()[0].id]">
+              More
+            </ion-button>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          @for (place of loadedPlaces().slice(0); track place.id) {
+            <ion-item detail [routerLink]="['/', 'course', 'places', 'tabs', 'discover', place.id]">
+              <ion-thumbnail slot="start">
+                <ion-img />
+              </ion-thumbnail>
+
+              <ion-label>
+                <h2>{{ place.title }}</h2>
+                <p>{{ place.description }}</p>
+              </ion-label>
+            </ion-item>
+          }
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
