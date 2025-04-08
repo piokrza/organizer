@@ -7,7 +7,7 @@ export class PlacesService {
   places: Place[] = [
     {
       description: 'description 1',
-      id: '214412',
+      id: '123',
       imageUrl: 'https://picsum.photos/200/300',
       price: 214,
       title: 'title 1',
