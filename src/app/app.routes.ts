@@ -6,7 +6,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: Path.COURSE,
+    redirectTo: Path.AUTH,
   },
   {
     path: Path.AUTH,

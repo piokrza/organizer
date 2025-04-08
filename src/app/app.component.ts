@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { addIcons } from 'ionicons';
+import { search, card } from 'ionicons/icons';
 
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 
@@ -13,4 +15,8 @@ const imports = [IonApp, IonRouterOutlet];
   `,
   imports,
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {
+    addIcons({ search, card });
+  }
+}
